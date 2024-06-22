@@ -1,4 +1,4 @@
---DBI202_AI18D01_LAB3_SU24--
+﻿--DBI202_AI18D01_LAB3_SU24--
 
 USE [FUH_COMPANY]
 GO
@@ -75,10 +75,7 @@ JOIN tblDepartment dep ON e.depNum = dep.depNum
 WHERE DATEDIFF(YEAR, d.depBirthdate, GETDATE()) > 18 AND dep.depName = N'Phòng Nghiên cứu và phát triển';
 
 --LanNhi--
-<<<<<<< Updated upstream
-=======
-use FUH_COMPANY;
-go
+
 --14.Cho biết số lượng người phụ thuộc theo giới tính. 
 --Thông tin yêu cầu: giới tính, số lượng người phụ thuộc
 SELECT 
@@ -309,9 +306,6 @@ LEFT JOIN
     tblWorksOn w ON p.proNum = w.proNum
 GROUP BY 
     p.proNum, p.proName;
-
---BaoTran--
->>>>>>> Stashed changes
 
 --Vinh--
 
