@@ -76,6 +76,83 @@ WHERE DATEDIFF(YEAR, d.depBirthdate, GETDATE()) > 18 AND dep.depName = N'Phòng 
 
 --LanNhi--
 
---BaoTran--
-
 --Vinh--
+
+ --27.Cho biết tổng số giờ làm của mỗi dự án. Thông tin yêu cầu: mã dự án, tên dự án, tổng số giờ làm.
+SELECT project_id, project_name, SUM(hours_worked) AS total_hours
+FROM project_hours
+GROUP BY project_id, project_name;
+
+--28.Cho biết dự án nào có số lượng thành viên là ít nhất. Thông tin yêu cầu: mã dự án, tên dự án, số lượng thành viên.
+SELECT TOP 1 project_id, project_name, COUNT(member_id) AS member_count
+FROM project_members
+GROUP BY project_id, project_name
+ORDER BY member_count ASC
+
+--29..Cho biết dự án nào có số lượng thành viên là nhiều nhất. Thông tin yêu cầu: mã dự án, tên dự án, số lượng thành viên.
+SELECT TOP 1 project_id, project_name, COUNT(member_id) AS member_count
+FROM project_members
+GROUP BY project_id, project_name
+ORDER BY member_count DESC
+
+ --30.Cho biết dự án nào có tổng số giờ làm là ít nhất. Thông tin yêu cầu: mã dự án, tên dự án, tổng số giờ làm.
+SELECT TOP 1 project_id, project_name, SUM(hours_worked) AS total_hours
+FROM project_hours
+GROUP BY project_id, project_name
+ORDER BY total_hours ASC
+
+ --31..Cho biết dự án nào có tổng số giờ làm là nhiều nhất. Thông tin yêu cầu: mã dự án, tên dự án, tổng số giờ làm.
+SELECT TOP 1 project_id, project_name, SUM(hours_worked) AS total_hours
+FROM project_hours
+GROUP BY project_id, project_name
+ORDER BY total_hours DESC
+
+ --32..Cho biết số lượng phòng ban làm việc theo mỗi nơi làm việc. Thông tin yêu cầu: tên nơi làm việc, số lượng phòng ban.
+SELECT workplace_name, COUNT(department_id) AS department_count
+FROM departments
+GROUP BY workplace_name;
+
+ --33.Cho biết số lượng chỗ làm việc theo mỗi phòng ban. Thông tin yêu cầu: mã phòng ban, tên phòng ban, số lượng chỗ làm việc.
+SELECT department_id, department_name, COUNT(workplace_id) AS workplace_count
+FROM workplaces
+GROUP BY department_id, department_name;
+
+ --34.Cho biết phòng ban nào có nhiều chỗ làm việc nhất. Thông tin yêu cầu: mã phòng ban, tên phòng ban, số lượng chỗ làm việc.
+SELECT TOP 1 department_id, department_name, COUNT(workplace_id) AS workplace_count
+FROM workplaces
+GROUP BY department_id, department_name
+ORDER BY workplace_count DESC
+
+ --35.Cho biết phòng ban nào có ít chỗ làm việc nhất. Thông tin yêu cầu: mã phòng ban, tên phòng ban, số lượng chỗ làm việc.
+SELECT TOP 1 department_id, department_name, COUNT(workplace_id) AS workplace_count
+FROM workplaces
+GROUP BY department_id, department_name
+ORDER BY workplace_count ASC
+
+ --36.Cho biết địa điểm nào có nhiều phòng ban làm việc nhất. Thông tin yêu cầu: tên nơi làm việc, số lượng phòng ban.
+SELECT TOP 1 workplace_name, COUNT(department_id) AS department_count
+FROM departments
+GROUP BY workplace_name
+ORDER BY department_count DESC
+
+--37.Cho biết địa điểm nào có ít phòng ban làm việc nhất. Thông tin yêu cầu: tên nơi làm việc, số lượng phòng ban.
+SELECT TOP 1 workplace_name, COUNT(department_id) AS department_count
+FROM departments
+GROUP BY workplace_name
+ORDER BY department_count ASC
+
+ --38.Cho biết nhân viên nào có nhiều người phụ thuộc nhất. Thông tin yêu cầu: mã số, họ tên nhân viên, số lượng người phụ thuộc
+SELECT TOP 1 e.employee_id, e.employee_name, COUNT(d.dependent_id) AS dependent_count
+FROM employees e
+JOIN dependents d ON e.employee_id = d.employee_id
+GROUP BY e.employee_id, e.employee_name
+ORDER BY dependent_count DESC
+
+ --39.Cho biết nhân viên nào có ít người phụ thuộc nhất. Thông tin yêu cầu: mã số, họ tên nhân viên, số lượng người phụ thuộc.
+SELECT TOP 1 e.employee_id, e.employee_name, COUNT(d.dependent_id) AS dependent_count
+FROM employees e
+JOIN dependents d ON e.employee_id = d.employee_id
+GROUP BY e.employee_id, e.employee_name
+ORDER BY dependent_count ASC;
+
+--BaoTran--
