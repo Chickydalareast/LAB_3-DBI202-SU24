@@ -75,14 +75,17 @@ JOIN tblDepartment dep ON e.depNum = dep.depNum
 WHERE DATEDIFF(YEAR, d.depBirthdate, GETDATE()) > 18 AND dep.depName = N'Phòng Nghiên cứu và phát triển';
 
 --LanNhi--
---14.Cho biết số lượng người phụ thuộc theo giới tính. Thông tin yêu cầu: giới tính, số lượng người phụ thuộc
+use FUH_COMPANY;
+go
+--14.Cho biết số lượng người phụ thuộc theo giới tính. 
+--Thông tin yêu cầu: giới tính, số lượng người phụ thuộc
 SELECT 
-    empSex, 
-    COUNT(depNum) AS numOfEmps
+    depSex,
+    COUNT(*) AS numOfDep
 FROM 
-    tblEmployee
+    tblDependent
 GROUP BY 
-    empSex;
+    depSex;
 go
 --15.Cho biết số lượng người phụ thuộc theo mối liên hệ với nhân viên. Thông tin yêu cầu: mối liên hệ, số lượng người phụ thuộc
 SELECT 
@@ -93,53 +96,88 @@ FROM
 GROUP BY 
     depRelationship; 
 go
---16.Cho biết số lượng người phụ thuộc theo mỗi phòng ban. Thông tin yêu cầu: mã phòng ban, tên phòng ban, số lượng người phụ thuộc
+--16.Cho biết số lượng người phụ thuộc theo mỗi phòng ban. 
+--Thông tin yêu cầu: mã phòng ban, tên phòng ban, số lượng người phụ thuộc
 SELECT 
-    d.depNum , 
-    d.depName , 
+    d.depNum,
+    d.depName,
     COUNT(dep.depName) AS numOfDep
 FROM 
     tblDepartment d
-JOIN 
+LEFT JOIN 
     tblEmployee e ON d.depNum = e.depNum
-JOIN 
+LEFT JOIN 
     tblDependent dep ON e.empSSN = dep.empSSN
 GROUP BY 
-    d.depNum, d.depName;
+    d.depNum, d.depName
+ORDER BY 
+    d.depNum;
 go
 --17.Cho biết phòng ban nào có số lượng người phụ thuộc là ít nhất. 
 --Thông tin yêu cầu: mã phòng ban, tên phòng ban, số lượng người phụ thuộc
-SELECT TOP 1 
+SELECT 
     d.depNum, 
     d.depName, 
     COUNT(dep.depName) AS numOfDep
 FROM 
     tblDepartment d
-JOIN 
+LEFT JOIN 
     tblEmployee e ON d.depNum = e.depNum
-JOIN 
+LEFT JOIN 
     tblDependent dep ON e.empSSN = dep.empSSN
 GROUP BY 
     d.depNum, d.depName
+HAVING 
+    COUNT(dep.depName) = (
+        SELECT 
+            MIN(dep_count)
+        FROM (
+            SELECT 
+                COUNT(dep2.depName) AS dep_count
+            FROM 
+                tblDepartment d2
+            LEFT JOIN 
+                tblEmployee e2 ON d2.depNum = e2.depNum
+            LEFT JOIN 
+                tblDependent dep2 ON e2.empSSN = dep2.empSSN
+            GROUP BY 
+                d2.depNum, d2.depName
+        ) AS Subquery
+    )
 ORDER BY 
-    COUNT(dep.depName) ASC;
+    d.depNum;
 go
 --18.Cho biết phòng ban nào có số lượng người phụ thuộc là nhiều nhất.
 --Thông tin yêu cầu: mã phòng ban, tên phòng ban, số lượng người phụ thuộc
-SELECT TOP 1 
-    d.depNum, 
-    d.depName, 
+SELECT 
+    d.depNum,
+    d.depName,
     COUNT(dep.depName) AS numOfDep
 FROM 
     tblDepartment d
-JOIN 
+LEFT JOIN 
     tblEmployee e ON d.depNum = e.depNum
-JOIN 
+LEFT JOIN 
     tblDependent dep ON e.empSSN = dep.empSSN
 GROUP BY 
     d.depNum, d.depName
-ORDER BY 
-    COUNT(dep.depName) DESC;
+HAVING 
+    COUNT(dep.depName) = (
+        SELECT 
+            MAX(dependent_count)
+        FROM (
+            SELECT 
+                COUNT(dep2.depName) AS dependent_count
+            FROM 
+                tblDepartment d2
+            LEFT JOIN 
+                tblEmployee e2 ON d2.depNum = e2.depNum
+            LEFT JOIN 
+                tblDependent dep2 ON e2.empSSN = dep2.empSSN
+            GROUP BY 
+                d2.depNum, d2.depName
+        ) AS max_counts
+	);
 go
 --19.Cho biết tổng số giờ tham gia dự án của mỗi nhân viên. 
 --Thông tin yêu cầu: mã nhân viên, tên nhân viên, tên phòng ban của nhân viên
@@ -262,14 +300,14 @@ go
 SELECT 
     p.proNum,
     p.proName,
-    COUNT(w.empSSN)
+    COUNT(w.empSSN) AS numOfMem
 FROM 
     tblProject p
 LEFT JOIN 
     tblWorksOn w ON p.proNum = w.proNum
 GROUP BY 
     p.proNum, p.proName;
-go
+
 --BaoTran--
 
 --Vinh--
