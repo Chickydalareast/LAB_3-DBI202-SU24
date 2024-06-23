@@ -4,6 +4,7 @@ USE [FUH_COMPANY]
 GO
 
 --Trunghieu--
+	
  --1. Cho biết ai đang quản lý phòng ban có tên: Phòng Nghiên cứu và phát triển. --
  SELECT e.empSSN, e.empName, d.depNum, d.depName
 FROM tblEmployee e
@@ -74,8 +75,8 @@ JOIN tblEmployee e ON d.empSSN = e.empSSN
 JOIN tblDepartment dep ON e.depNum = dep.depNum
 WHERE DATEDIFF(YEAR, d.depBirthdate, GETDATE()) > 18 AND dep.depName = N'Phòng Nghiên cứu và phát triển';
 
---LanNhi--
 
+--LanNhi--
 
 --14.Cho biết số lượng người phụ thuộc theo giới tính. 
 --Thông tin yêu cầu: giới tính, số lượng người phụ thuộc
@@ -308,7 +309,9 @@ LEFT JOIN
 GROUP BY 
     p.proNum, p.proName;
 
---Vinh--
+
+--Gia Vinh--
+
 
  --27.Cho biết tổng số giờ làm của mỗi dự án. Thông tin yêu cầu: mã dự án, tên dự án, tổng số giờ làm.
 SELECT project_id, project_name, SUM(hours_worked) AS total_hours
@@ -387,7 +390,9 @@ JOIN dependents d ON e.employee_id = d.employee_id
 GROUP BY e.employee_id, e.employee_name
 ORDER BY dependent_count ASC;
 
+
 --BaoTran--
+
 
 --40.Cho biết nhân viên nào không có người phụ thuộc. 
 --Thông tin yêu cầu: mã số nhân viên, họ tên nhân viên, tên phòng ban của nhân viên
